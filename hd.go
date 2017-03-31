@@ -13,6 +13,8 @@ import (
 	"strings"
 )
 
+const OffLen = 6 // Default lenght of the output Address/Offset field
+
 // Flag variables
 var (
 	inFile   string
@@ -26,32 +28,45 @@ var (
 	hexUpper bool
 	edgeMark string
 	//
-	argFname string
-	fileLen  = -1
-	addrFlen = -1
+	argFname  string
+	fileLen   = -1
+	addrFlen  = -1
+	minOffLen = -1
 )
 
-// Main initialization, a convenient place to set flags up
+// Main initialization, set flags up
 func init() {
-	flag.StringVar(&inFile, "inFile", "",
-		"input file name.  Argument 0 may also be used.")
 	flag.StringVar(&edgeMark, "edgeMark", "|",
 		"single character at edges if the right hand side.")
-	flag.IntVar(&offBegin, "offBegin", 0,
-		"begin dump at file offset.")
-	flag.IntVar(&offEnd, "offEnd", -1,
-		"end dump at file offset.")
-	flag.IntVar(&lineLen, "lineLen", 16,
-		"dump line byte count.")
-	flag.IntVar(&innerLen, "innerLen", 4,
-		"dump line inner area byte count.")
+
 	flag.BoolVar(&goDump, "goDump", false,
 		"if true, use standard go encoding/hex/Dump.")
+
+	flag.BoolVar(&h, "h", false, "print usage message.")
+
 	flag.BoolVar(&hexUpper, "hexUpper", false,
 		"if true, print upper case hex.")
+
+	flag.StringVar(&inFile, "inFile", "",
+		"input file name.  Argument 0 may also be used.")
+
+	flag.IntVar(&innerLen, "innerLen", 4,
+		"dump line inner area byte count.")
+
+	flag.IntVar(&lineLen, "lineLen", 16,
+		"dump line byte count.")
+
+	flag.IntVar(&minOffLen, "minOffLen", -1,
+		"minimum lenght of the offset field.")
+
+	flag.IntVar(&offBegin, "offBegin", 0,
+		"begin dump at file offset.")
+
+	flag.IntVar(&offEnd, "offEnd", -1,
+		"end dump at file offset.")
+
 	flag.BoolVar(&quiet, "quiet", false,
 		"if true, suppress header/trailer/informational messages.")
-	flag.BoolVar(&h, "h", false, "print usage message.")
 }
 
 func checkError(e error, ds string) {
@@ -81,8 +96,11 @@ func setFileLen(f *os.File) {
 	fileLen = int(fi.Size())
 	hexDigitCount(fileLen)
 	addrFlen++
-	if addrFlen < 6 {
-		addrFlen = 6
+	if addrFlen < OffLen {
+		addrFlen = OffLen
+	}
+	if addrFlen < minOffLen {
+		addrFlen = minOffLen
 	}
 	// fmt.Printf("Hex Digit Count: %d\n", addrFlen)
 }
@@ -104,7 +122,12 @@ func getReader() io.Reader {
 		argFname = fa[0]
 	}
 	if inFile == "" && argFname == "" {
-		addrFlen = 8 // Arbitrary, file size is unknown
+		addrFlen = OffLen  // Arbitrary, file size is unknown
+		if minOffLen > 0 { // Let user specify length
+			if addrFlen < minOffLen {
+				addrFlen = minOffLen
+			}
+		}
 		return os.Stdin
 	}
 	if inFile != "" {

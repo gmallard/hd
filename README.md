@@ -31,6 +31,10 @@ output.
 
     dump line byte count. (default 16)
 
+-minOffLen int
+
+	minimum lenght of the offset field. (default -1)
+
 -offBegin int
 
     begin dump at file offset.
