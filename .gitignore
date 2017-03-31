@@ -10,4 +10,7 @@ _*
 *.log
 # temp files
 temp*
+# Executables
+hd
+hd.exe
 
