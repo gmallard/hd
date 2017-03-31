@@ -5,6 +5,8 @@ output.
 
 ## Parameters ##
 
+Double minus (--) versions of parameters are also accepted.
+
 -edgeMark string
 
     single character at edges if the right hand side. (default "|")
@@ -46,7 +48,10 @@ output.
 -quiet
 
     if true, suppress header/trailer/informational messages.
-    
+
+-version
+
+	if true, display program version.
 
 ## Examples ##
 

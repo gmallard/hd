@@ -13,7 +13,10 @@ import (
 	"strings"
 )
 
-const OffLen = 6 // Default lenght of the output Address/Offset field
+const (
+	OffLen  = 6       // Default lenght of the output Address/Offset field
+	Version = "1.0.0" // Version Number
+)
 
 // Flag variables
 var (
@@ -32,6 +35,7 @@ var (
 	fileLen   = -1
 	addrFlen  = -1
 	minOffLen = -1
+	version   bool
 )
 
 // Main initialization, set flags up
@@ -67,6 +71,9 @@ func init() {
 
 	flag.BoolVar(&quiet, "quiet", false,
 		"if true, suppress header/trailer/informational messages.")
+
+	flag.BoolVar(&version, "version", false,
+		"if true, display program version.")
 }
 
 func checkError(e error, ds string) {
@@ -206,10 +213,16 @@ func printRightBuffer(br int, ib []byte) {
 
 func main() {
 	flag.Parse() // Parse all flags
+
 	if h {
 		flag.PrintDefaults()
 		return
 	}
+	if version {
+		fmt.Printf("hd Version: %s\n", Version)
+		return
+	}
+
 	if !quiet {
 		fmt.Println("DumpFile Starts....")
 	}
