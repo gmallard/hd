@@ -36,6 +36,10 @@ var (
 	addrFlen  = -1
 	minOffLen = -1
 	version   bool
+	//
+	normLineLen = -1
+	lastLineLen = -1
+	pad         = "                           "
 )
 
 // Main initialization, set flags up
@@ -187,15 +191,24 @@ leftFor:
 			} else {
 				os = os + "  " // Add two blanks here
 			}
+			if normLineLen < len(os) {
+				normLineLen = len(os)
+			}
 			noff++
 			if noff > br {
-				os = os + "          " // Alignment need fixed.
+				// os = os + "          " // Alignment need fixed.
+				os = os + " " // End of left (center) data
+				lastLineLen = len(os) - 1
 				break leftFor
 			}
 		}
 		os = os + " " // Blank at end of inner
 	}
 	fmt.Print(os)
+	if lastLineLen < normLineLen {
+		fmt.Print(pad[:normLineLen-lastLineLen])
+	}
+	// fmt.Println("lll", lastLineLen, "nll", normLineLen)
 	fmt.Print(edgeMark)
 }
 
@@ -245,6 +258,7 @@ func main() {
 	}
 	//
 	roff := offBegin
+	needcr := false
 	for {
 		readLen := lineLen
 		if offEnd > 0 && roff+readLen > offEnd {
@@ -262,8 +276,12 @@ func main() {
 		printRightBuffer(br, ib)
 		roff += lineLen
 		if offEnd > 0 && roff > offEnd {
+			needcr = true
 			break
 		}
+		fmt.Println()
+	}
+	if needcr {
 		fmt.Println()
 	}
 	if !quiet {
