@@ -9,7 +9,7 @@ Double minus (--) versions of parameters are also accepted.
 
 -edgeMark string
 
-    single character at edges if the right hand side. (default "|")
+    single character at edges of the right hand character block. (default "|")
 
 -goDump
 
@@ -31,7 +31,7 @@ Double minus (--) versions of parameters are also accepted.
 
 -lineLen int
 
-    dump line byte count. (default 16)
+    dump line total byte count. (default 16)
 
 -minOffLen int
 
@@ -51,14 +51,19 @@ Double minus (--) versions of parameters are also accepted.
 
 -version
 
-	if true, display program version.
+	if true, display program version and exit.
 
 ## Examples ##
 
+```
+#
 hd -inFile /etc/hosts
-
+#
 hd /etc/hosts
-
+#
 cat /etc/hosts | hd
-
+#
 hd -lineLen 8 -innerLen 2 /etc/hosts
+#
+cat /etc/hosts | hd -lineLen 6 -innerLen 3
+```

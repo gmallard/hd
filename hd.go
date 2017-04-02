@@ -41,7 +41,7 @@ var (
 // Main initialization, set flags up
 func init() {
 	flag.StringVar(&edgeMark, "edgeMark", "|",
-		"single character at edges if the right hand side.")
+		"single character at edges of the right hand character block.")
 
 	flag.BoolVar(&goDump, "goDump", false,
 		"if true, use standard go encoding/hex/Dump.")
@@ -58,7 +58,7 @@ func init() {
 		"dump line inner area byte count.")
 
 	flag.IntVar(&lineLen, "lineLen", 16,
-		"dump line byte count.")
+		"dump line total byte count.")
 
 	flag.IntVar(&minOffLen, "minOffLen", -1,
 		"minimum lenght of the offset field.")
@@ -73,7 +73,7 @@ func init() {
 		"if true, suppress header/trailer/informational messages.")
 
 	flag.BoolVar(&version, "version", false,
-		"if true, display program version.")
+		"if true, display program version and exit.")
 }
 
 func checkError(e error, ds string) {
