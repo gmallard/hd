@@ -35,7 +35,7 @@ Double minus (--) versions of parameters are also accepted.
 
 -minOffLen int
 
-	minimum lenght of the offset field. (default -1)
+	minimum length of the offset field. (default -1)
 
 -offBegin int
 
