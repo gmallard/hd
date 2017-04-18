@@ -15,7 +15,7 @@ import (
 
 const (
 	OffLen  = 6       // Default length of the output Address/Offset field
-	Version = "1.0.1" // Version Number
+	Version = "1.0.2" // Version Number
 )
 
 // Flag variables
