@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	OffLen  = 6       // Default lenght of the output Address/Offset field
+	OffLen  = 6       // Default length of the output Address/Offset field
 	Version = "1.0.1" // Version Number
 )
 
