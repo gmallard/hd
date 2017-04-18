@@ -146,11 +146,7 @@ func getReader() io.Reader {
 	if inFile != "" {
 		return fileInit(inFile, "inFile")
 	}
-	if argFname != "" {
-		return fileInit(argFname, "argFname")
-	}
-	// Never get here ......
-	return nil
+	return fileInit(argFname, "argFname")
 }
 
 func goFormatDump(r io.Reader) {
