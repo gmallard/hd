@@ -252,7 +252,6 @@ func main() {
 	}
 	//
 	roff := offBegin
-	needcr := false
 	for {
 		readLen := lineLen
 		if offEnd > 0 && roff+readLen > offEnd {
@@ -270,12 +269,9 @@ func main() {
 		printRightBuffer(br, ib)
 		roff += lineLen
 		if offEnd > 0 && roff > offEnd {
-			needcr = true
+			fmt.Println()
 			break
 		}
-		fmt.Println()
-	}
-	if needcr {
 		fmt.Println()
 	}
 	if !quiet {
