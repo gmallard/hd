@@ -40,6 +40,8 @@ var (
 	normLineLen = -1
 	lastLineLen = -1
 	pad         = "                           "
+	offFmt      = "%016x"
+	lbFmt       = "%s%02x"
 )
 
 // Main initialization, set flags up
@@ -161,11 +163,7 @@ func goFormatDump(r io.Reader) {
 }
 
 func printOffset(o int) {
-	hexFmt := "%016x"
-	if hexUpper {
-		hexFmt = "%016X"
-	}
-	had := fmt.Sprintf(hexFmt, o)
+	had := fmt.Sprintf(offFmt, o)
 	fmt.Printf("%s  ", had[16-addrFlen:])
 }
 
@@ -178,16 +176,12 @@ func printLeftBuffer(br int, ib []byte) {
 	nol := (lineLen / innerLen) + 1
 	os := ""
 	noff := 0
-	hexFmt := "%s%02x"
-	if hexUpper {
-		hexFmt = "%s%02X"
-	}
 leftFor:
 	for no := 0; no < nol; no++ {
 		for ni := 0; ni < innerLen; ni++ {
 			if noff < br {
 				nbi := int(ib[noff])
-				os = fmt.Sprintf(hexFmt, os, nbi)
+				os = fmt.Sprintf(lbFmt, os, nbi)
 			} else {
 				os = os + "  " // Add two blanks here
 			}
@@ -255,6 +249,10 @@ func main() {
 			fmt.Println("DumpFile Ends, RC:", 2)
 		}
 		os.Exit(2)
+	}
+	if hexUpper {
+		offFmt = "%016X"
+		lbFmt = "%s%02X"
 	}
 	//
 	roff := offBegin
