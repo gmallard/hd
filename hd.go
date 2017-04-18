@@ -18,7 +18,7 @@ const (
 	Version = "1.0.2" // Version Number
 )
 
-// Flag variables
+// Flag and other variables
 var (
 	inFile   string
 	offBegin int
@@ -82,6 +82,9 @@ func init() {
 		"if true, display program version and exit.")
 }
 
+/*
+Error checker.  Quit if an error is not nil.
+*/
 func checkError(e error, ds string) {
 	if e != nil {
 		fmt.Printf("\n%s %s\n\n", ds, e)
@@ -92,6 +95,9 @@ func checkError(e error, ds string) {
 	}
 }
 
+/*
+Set initial digit count of the address/offset field.
+*/
 func hexDigitCount(i int) {
 	addrFlen = 1
 	for {
@@ -103,6 +109,9 @@ func hexDigitCount(i int) {
 	}
 }
 
+/*
+Set the size of the file being processed.
+*/
 func setFileLen(f *os.File) {
 	fi, err := f.Stat()
 	checkError(err, "Stat Error ==>")
@@ -118,6 +127,9 @@ func setFileLen(f *os.File) {
 	// fmt.Printf("Hex Digit Count: %d\n", addrFlen)
 }
 
+/*
+Open a user specified file to get an io.Reader.
+*/
 func fileInit(fn, ed string) io.Reader {
 	f, err := os.OpenFile(fn, os.O_RDONLY, 0644)
 	checkError(err, ed+" Open Error ==>")
@@ -129,6 +141,9 @@ func fileInit(fn, ed string) io.Reader {
 	return f
 }
 
+/*
+High level return of an io.Reader.
+*/
 func getReader() io.Reader {
 	fa := flag.Args()
 	if len(fa) >= 1 {
@@ -149,6 +164,9 @@ func getReader() io.Reader {
 	return fileInit(argFname, "argFname")
 }
 
+/*
+Use format provided in the encoding/hex package.
+*/
 func goFormatDump(r io.Reader) {
 	// Dump
 	buff, err := ioutil.ReadAll(r)
@@ -158,16 +176,25 @@ func goFormatDump(r io.Reader) {
 	return
 }
 
+/*
+Print the address/offset field.
+*/
 func printOffset(o int) {
 	had := fmt.Sprintf(offFmt, o)
 	fmt.Printf("%s  ", had[16-addrFlen:])
 }
 
+/*
+Get a buffer of blanks.
+*/
 func blankBuf(l int) []byte {
 	s := strings.Repeat(" ", l)
 	return []byte(s)
 }
 
+/*
+Print the left buffer (left side of output line).
+*/
 func printLeftBuffer(br int, ib []byte) {
 	nol := (lineLen / innerLen) + 1
 	os := ""
@@ -202,6 +229,9 @@ leftFor:
 	fmt.Print(edgeMark)
 }
 
+/*
+Print the right buffer (right side of output line).
+*/
 func printRightBuffer(br int, ib []byte) {
 	bb := blankBuf(br)
 	for i := 0; i < br; i++ {
@@ -214,6 +244,9 @@ func printRightBuffer(br int, ib []byte) {
 	fmt.Print(edgeMark)
 }
 
+/*
+Dump file contents in hex format.
+*/
 func main() {
 	flag.Parse() // Parse all flags
 
