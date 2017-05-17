@@ -30,6 +30,7 @@ var (
 	h        bool
 	hexUpper bool
 	edgeMark string
+	inString string
 	//
 	argFname  string
 	fileLen   = -1
@@ -42,6 +43,7 @@ var (
 	pad         = "                           "
 	offFmt      = "%016x"
 	lbFmt       = "%s%02x"
+	//
 )
 
 // Main initialization, set flags up
@@ -62,6 +64,9 @@ func init() {
 
 	flag.IntVar(&innerLen, "innerLen", 4,
 		"dump line inner area byte count.")
+
+	flag.StringVar(&inString, "inString", "",
+		"input string to dump.")
 
 	flag.IntVar(&lineLen, "lineLen", 16,
 		"dump line total byte count.")
@@ -107,6 +112,13 @@ func hexDigitCount(i int) {
 		}
 		addrFlen++
 	}
+	addrFlen++
+	if addrFlen < OffLen {
+		addrFlen = OffLen
+	}
+	if addrFlen < minOffLen {
+		addrFlen = minOffLen
+	}
 }
 
 /*
@@ -117,13 +129,6 @@ func setFileLen(f *os.File) {
 	checkError(err, "Stat Error ==>")
 	fileLen = int(fi.Size())
 	hexDigitCount(fileLen)
-	addrFlen++
-	if addrFlen < OffLen {
-		addrFlen = OffLen
-	}
-	if addrFlen < minOffLen {
-		addrFlen = minOffLen
-	}
 	// fmt.Printf("Hex Digit Count: %d\n", addrFlen)
 }
 
@@ -148,6 +153,10 @@ func getReader() io.Reader {
 	fa := flag.Args()
 	if len(fa) >= 1 {
 		argFname = fa[0]
+	}
+	if inString != "" {
+		hexDigitCount(len(inString))
+		return strings.NewReader(inString)
 	}
 	if inFile == "" && argFname == "" {
 		addrFlen = OffLen  // Arbitrary, file size is unknown
@@ -291,12 +300,13 @@ func main() {
 			readLen = offEnd - roff + 1
 		}
 		ib := blankBuf(readLen)
-		// fmt.Println("ReadLen is now:", readLen)
+		//fmt.Println("ReadLen is now:", readLen)
 		br, _ := io.ReadAtLeast(r, ib, readLen)
-		// fmt.Println("Actual Read Length:", br)
+		//fmt.Println("Actual Read Length:", br)
 		if br == 0 {
 			break
 		}
+		//fmt.Println("Start print offset")
 		printOffset(roff)
 		printLeftBuffer(br, ib)
 		printRightBuffer(br, ib)

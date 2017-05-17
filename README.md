@@ -25,6 +25,10 @@ Double minus (--) versions of parameters are also accepted.
 
     input file name.  Argument 0 may also be used.
 
+-inString string
+
+    input string to dump.
+
 -innerLen int
 
     dump line inner area byte count. (default 4)
@@ -66,4 +70,6 @@ cat /etc/hosts | hd
 hd -lineLen 8 -innerLen 2 /etc/hosts
 #
 cat /etc/hosts | hd -lineLen 6 -innerLen 3
+#
+hd -inString "αβγδεζηθικλμνξοπρστυφχψω"
 ```
