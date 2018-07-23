@@ -40,9 +40,11 @@ var (
 	//
 	normLineLen = -1
 	lastLineLen = -1
-	pad         = "                           "
-	offFmt      = "%016x"
-	lbFmt       = "%s%02x"
+	//                      1         2         3         4
+	//             1234567890123456789012345678901234567890
+	pad    = "                                        "
+	offFmt = "%016x"
+	lbFmt  = "%s%02x"
 	//
 )
 
@@ -232,6 +234,13 @@ leftFor:
 	}
 	fmt.Print(os)
 	if lastLineLen < normLineLen {
+		//
+		/*
+			if len(pad) < normLineLen-lastLineLen {
+				fmt.Println()
+				fmt.Println("lp", len(pad), "nx", normLineLen, lastLineLen)
+			}
+		*/
 		fmt.Print(pad[:normLineLen-lastLineLen])
 	}
 	// fmt.Println("lll", lastLineLen, "nll", normLineLen)
