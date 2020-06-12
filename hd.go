@@ -11,6 +11,7 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+	"unicode/utf8"
 )
 
 const (
@@ -28,6 +29,7 @@ var (
 	goDump   bool
 	quiet    bool
 	h        bool
+	nobu     bool
 	hexUpper bool
 	edgeMark string
 	inString string
@@ -87,6 +89,10 @@ func init() {
 
 	flag.BoolVar(&version, "version", false,
 		"if true, display program version and exit.")
+
+	flag.BoolVar(&nobu, "nobu", false,
+		"if true, show bad UTF8 in character output.")
+
 }
 
 /*
@@ -257,9 +263,30 @@ func printRightBuffer(br int, ib []byte) {
 		if bb[i] < byte(0x20) {
 			bb[i] = byte('.')
 		}
+		if bb[i] == byte(0x7f) {
+			bb[i] = byte('.')
+		}
 	}
-	fmt.Print(string(bb))
+	rhs := string(bb)
+	// fmt.Printf("\nb16: %#x\n", rhs[0:16])
+	if nobu {
+		if !utf8.ValidString(rhs) {
+			rr := []rune(rhs)
+			wrs := make([]rune, 0)
+			for _, v := range rr {
+				if utf8.ValidRune(v) {
+					wrs = append(wrs, v)
+				} else {
+					wrs = append(wrs, ' ')
+				}
+				rhs = string(wrs)
+			}
+		}
+		//
+	}
+	fmt.Print(rhs)
 	fmt.Print(edgeMark)
+	//
 }
 
 /*
@@ -268,6 +295,7 @@ Dump file contents in hex format.
 func main() {
 	flag.Parse() // Parse all flags
 
+	// fmt.Println("nobu: ", nobu)
 	if h {
 		flag.PrintDefaults()
 		return
